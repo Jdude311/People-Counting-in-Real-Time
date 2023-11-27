@@ -224,15 +224,18 @@ def people_counter():
 		# draw a horizontal line in the center of the frame -- once an
 		# object crosses this line we will determine whether they were
 		# moving 'up' or 'down'
+		"""
 		cv2.line(frame, (0, H // 2), (W, H // 2), (0, 0, 0), 3)
 		cv2.putText(frame, "-Prediction border - Entrance-", (10, H - ((i * 20) + 200)),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
+		"""
 
 		# use the centroid tracker to associate the (1) old object
 		# centroids with (2) the newly computed object centroids
 		objects = ct.update(rects)
 
 		# loop over the tracked objects
+		in_frame = 0
 		for (objectID, centroid) in objects.items():
 			# check to see if a trackable object exists for the current
 			# object ID
@@ -245,6 +248,7 @@ def people_counter():
 			# otherwise, there is a trackable object so we can utilize it
 			# to determine direction
 			else:
+				in_frame += 1
 				# the difference between the y-coordinate of the *current*
 				# centroid and the mean of *previous* centroids will tell
 				# us in which direction the object is moving (negative for
@@ -302,6 +306,7 @@ def people_counter():
 		info_status = [
 		("Exit", totalUp),
 		("Enter", totalDown),
+		("In frame", in_frame),
 		("Status", status),
 		]
 
