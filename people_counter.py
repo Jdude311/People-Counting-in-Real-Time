@@ -18,6 +18,8 @@ import json
 import csv
 import cv2
 
+current_count = 0
+
 # execution start time
 start_time = time.time()
 # setup logger
@@ -133,7 +135,7 @@ def people_counter():
 		# resize the frame to have a maximum width of 500 pixels (the
 		# less data we have, the faster we can process it), then convert
 		# the frame from BGR to RGB for dlib
-		frame = imutils.resize(frame, width = 500)
+		frame = imutils.resize(frame, width = config["Resolution"])
 		rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
 		# if the frame dimensions are empty, set them
@@ -298,30 +300,38 @@ def people_counter():
 			# draw both the ID of the object and the centroid of the
 			# object on the output frame
 			text = "ID {}".format(objectID)
-			cv2.putText(frame, text, (centroid[0] - 10, centroid[1] - 10),
+			#cv2.putText(frame, text, (centroid[0] - 10, centroid[1] - 10),
+			cv2.putText(frame, "", (centroid[0] - 10, centroid[1] - 10),
 				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 			cv2.circle(frame, (centroid[0], centroid[1]), 4, (255, 255, 255), -1)
 
 		# construct a tuple of information we will be displaying on the frame
 		info_status = [
-		("Exit", totalUp),
-		("Enter", totalDown),
+		#("Exit", totalUp),
+		#("Enter", totalDown),
 		("In frame", in_frame),
 		("Status", status),
 		]
 
 		info_total = [
-		("Total people inside", ', '.join(map(str, total))),
+		#("In frame", in_frame),
 		]
-
+		"""
+		"""
 		# display the output
 		for (i, (k, v)) in enumerate(info_status):
 			text = "{}: {}".format(k, v)
 			cv2.putText(frame, text, (10, H - ((i * 20) + 20)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
+		"""
+		"""
 
 		for (i, (k, v)) in enumerate(info_total):
 			text = "{}: {}".format(k, v)
 			cv2.putText(frame, text, (265, H - ((i * 20) + 60)), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+
+		# display bounding boxes
+		for rect in rects:
+			cv2.rectangle(frame, (rect[0], rect[1]), (rect[2], rect[3]), (0,255,0), 1)
 
 		# initiate a simple log to save the counting data
 		if config["Log"]:
