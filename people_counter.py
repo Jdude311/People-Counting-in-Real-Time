@@ -17,8 +17,12 @@ import dlib
 import json
 import csv
 import cv2
+import data_uploader as data_uploader
+import asyncio
+import threading
 
-current_count = 0
+thread = threading.Thread(target=data_uploader.start_send_data_thread)
+thread.start()
 
 # execution start time
 start_time = time.time()
@@ -28,6 +32,7 @@ logger = logging.getLogger(__name__)
 # initiate features config.
 with open("utils/config.json", "r") as file:
     config = json.load(file)
+
 
 def parse_arguments():
 	# function to parse the arguments
@@ -312,6 +317,8 @@ def people_counter():
 		("In frame", in_frame),
 		("Status", status),
 		]
+		
+		data_uploader.update_humans_detected(in_frame)
 
 		info_total = [
 		#("In frame", in_frame),
@@ -380,3 +387,4 @@ if config["Scheduler"]:
 		schedule.run_pending()
 else:
 	people_counter()
+

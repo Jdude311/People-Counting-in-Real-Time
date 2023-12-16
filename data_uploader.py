@@ -33,7 +33,7 @@ async def send_data():
         print("Response Content:")
         print(response.text)
 
-        await asyncio.sleep(5)
+        await asyncio.sleep(2)
 
 def start_send_data_thread():
     loop = asyncio.new_event_loop()
